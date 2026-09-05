@@ -2192,7 +2192,7 @@ class Worker
             file_put_contents(static::$statisticsFile, '');
             chmod(static::$statisticsFile, 0722);
             file_put_contents(static::$statisticsFile, serialize($allWorkerInfo) . "\n", FILE_APPEND);
-            $loadavg = function_exists('sys_getloadavg') ? array_map(round(...), sys_getloadavg(), [2, 2, 2]) : ['-', '-', '-'];
+            $loadavg = function_exists('sys_getloadavg') ? array_map(static fn($v) => round((float)$v, 2), sys_getloadavg()) : ['-', '-', '-'];
             file_put_contents(static::$statisticsFile,
                 (static::$daemonize ? "Start worker in DAEMON mode." : "Start worker in DEBUG mode.") . "\n", FILE_APPEND);
             file_put_contents(static::$statisticsFile,
