@@ -2048,7 +2048,7 @@ class Worker
             posix_kill($oneWorkerPid, $sig);
             // If the process does not exit after stopTimeout seconds try to kill it.
             if (!static::getGracefulStop()) {
-                Timer::add(static::$stopTimeout, posix_kill(...), [$oneWorkerPid, SIGKILL], false);
+                Timer::add(static::$stopTimeout, 'posix_kill', [$oneWorkerPid, SIGKILL], false);
             }
         } // For child processes.
         else {
@@ -2092,12 +2092,12 @@ class Worker
             foreach ($workerPidArray as $workerPid) {
                 // Fix exit with status 2 for php8.2
                 if ($sig === SIGINT && !static::$daemonize) {
-                    Timer::add(1, posix_kill(...), [$workerPid, SIGINT], false);
+                    Timer::add(1, 'posix_kill', [$workerPid, SIGINT], false);
                 } else {
                     posix_kill($workerPid, $sig);
                 }
                 if (!static::getGracefulStop()) {
-                    Timer::add(ceil(static::$stopTimeout), posix_kill(...), [$workerPid, SIGKILL], false);
+                    Timer::add(ceil(static::$stopTimeout), 'posix_kill', [$workerPid, SIGKILL], false);
                 }
             }
             Timer::add(1, static::checkIfChildRunning(...));
